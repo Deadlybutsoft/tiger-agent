@@ -3,26 +3,24 @@ import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Modality } from '@google/genai';
 import SettingsModal from '../components/SettingsModal';
 import { 
-    HistoryIcon, 
-    EditIcon, 
-    UserProfileIcon,
-    ChevronDoubleRightIcon,
-    ChevronDoubleLeftIcon,
-    MoreHorizontalIcon,
-    ShareIcon,
-    LightbulbIcon,
-    RefreshIcon,
-    VolumeUpIcon,
     ChatBubbleIcon,
+    ChevronDoubleLeftIcon,
+    ChevronDoubleRightIcon,
     ClipboardIcon,
-    ThumbUpIcon,
-    ThumbDownIcon,
+    EditIcon,
+    LightbulbIcon,
     PaperclipIcon,
-    ArrowUpIcon,
-    SettingsIcon,
     PauseIcon,
-    CheckIcon,
-    PlusIcon
+    PencilIcon,
+    RefreshIcon,
+    SettingsIcon,
+    ShareIcon,
+    ThumbDownIcon,
+    ThumbUpIcon,
+    UserProfileIcon,
+    VolumeUpIcon,
+    ArrowUpIcon,
+    CheckIcon
 } from '../components/Icons';
 
 // Base64 decoding for TTS
@@ -56,29 +54,8 @@ async function decodeAudioData(
     return buffer;
 }
 
-
-interface SidebarItemProps {
-    icon: React.ReactNode;
-    text: string;
-    active?: boolean;
-    expanded: boolean;
-    onClick?: () => void;
-}
-
-const SidebarItem: React.FC<SidebarItemProps> = ({ icon, text, active, expanded, onClick }) => (
-    <button
-      onClick={onClick}
-      className={`flex items-center w-full h-12 px-3.5 rounded-full transition-colors duration-200 ${
-        active ? 'bg-[#424243] text-white' : 'text-white hover:bg-[#4a4a4b]'
-      } ${expanded ? 'justify-start' : 'justify-center'}`}
-    >
-      <div className="flex-shrink-0 w-7 h-7 flex items-center justify-center">{icon}</div>
-      {expanded && <span className="ml-3 font-medium whitespace-nowrap">{text}</span>}
-    </button>
-  );
-
 const AiMessageAction: React.FC<{ icon: React.ReactNode; onClick?: () => void }> = ({ icon, onClick }) => (
-    <button onClick={onClick} className="text-gray-200 hover:text-white transition-colors">
+    <button onClick={onClick} className="text-gray-200 hover:text-white transition-all active:scale-90">
         {icon}
     </button>
 );
@@ -92,16 +69,18 @@ const Dashboard: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [chatTitle, setChatTitle] = useState('New Chat');
-    const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
     const [copiedStates, setCopiedStates] = useState<{ [key: number]: boolean }>({});
     const [feedback, setFeedback] = useState<{ [key: number]: 'up' | 'down' | null }>({});
     
+    // Mock data for recent chats
+    const [recentChats, setRecentChats] = useState(['Quantum Physics Explained', 'Recipe for Sourdough', 'Workout Plan', '12-Week Fitness Journey', 'Learning Spanish Basics', 'History of Rome']);
+    const [activeChatIndex, setActiveChatIndex] = useState(0);
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const moreMenuRef = useRef<HTMLDivElement>(null);
     const generationControllerRef = useRef<{ stop: () => void } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -120,18 +99,6 @@ const Dashboard: React.FC = () => {
         }
     }, [inputValue]);
     
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
-                setIsMoreMenuOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [moreMenuRef]);
-
     const handleSendMessage = async (e?: React.FormEvent, prompt?: string) => {
         if (e) e.preventDefault();
         const currentInput = (prompt || inputValue).trim();
@@ -211,7 +178,6 @@ const Dashboard: React.FC = () => {
             });
             const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
             if (base64Audio) {
-                // Fix: Cast window to `any` to allow for vendor-prefixed `webkitAudioContext` for cross-browser compatibility.
                 const outputAudioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
                 const audioBuffer = await decodeAudioData(decode(base64Audio), outputAudioContext, 24000, 1);
                 const source = outputAudioContext.createBufferSource();
@@ -228,17 +194,9 @@ const Dashboard: React.FC = () => {
         setFeedback(prev => ({ ...prev, [index]: prev[index] === type ? null : type }));
     };
 
-    const handleClearChat = () => {
+    const handleNewChat = () => {
         setMessages([]);
-        setIsMoreMenuOpen(false);
-    };
-
-    const handleRenameChat = () => {
-        const newTitle = prompt("Enter new chat title:", chatTitle);
-        if (newTitle) {
-            setChatTitle(newTitle);
-        }
-        setIsMoreMenuOpen(false);
+        setChatTitle('New Chat');
     };
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,69 +207,86 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const mainSidebarItems = [
-        // Fix: Added `active: true` to satisfy the `SidebarItem` component's props.
-        { id: 'history', icon: <HistoryIcon className="w-6 h-6" />, text: 'History', active: true },
-    ];
-
   return (
-    <div className="flex h-screen w-full bg-[#363637] text-gray-300 font-sans">
-      <aside className={`flex flex-col justify-between p-4 bg-[#363637] transition-all duration-300 border-r border-[#515152] ${isSidebarExpanded ? 'w-64' : 'w-20'}`}>
-        <div className="flex flex-col items-center gap-4">
-            <button
-                onClick={() => window.location.hash = ''}
-                className={`flex items-center h-20 w-full mb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-md ${isSidebarExpanded ? 'px-3.5' : 'justify-center'}`}
-                aria-label="Go to homepage"
-            >
-                <img src="https://res.cloudinary.com/dkvkxermy/image/upload/v1762160811/20bbfb2f-a218-4a21-b75f-4b75789f05d8_ycizdr.png" alt="Suvo Logo" className="h-20 w-20" />
-                {isSidebarExpanded && <span className="font-saira text-3xl font-bold text-white tracking-wider ml-2">Suvo</span>}
-            </button>
-            {mainSidebarItems.map((item) => (
-                <SidebarItem key={item.id} icon={item.icon} text={item.text} active={item.active} expanded={isSidebarExpanded} />
-            ))}
-        </div>
-        <div className="flex flex-col items-center gap-4 w-full">
-            <SidebarItem icon={<UserProfileIcon className="w-7 h-7" />} text="Profile" expanded={isSidebarExpanded} onClick={() => setIsSettingsOpen(true)} />
-            <SidebarItem icon={<SettingsIcon className="w-6 h-6" />} text="Settings" expanded={isSidebarExpanded} onClick={() => setIsSettingsOpen(true)} />
-            <button
-                onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
-                className={`flex items-center w-full h-12 rounded-full transition-colors duration-200 text-white hover:bg-[#4a4a4b] ${isSidebarExpanded ? 'justify-start px-3.5' : 'justify-center'}`}
-                aria-label={isSidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
-            >
-                <div className="flex-shrink-0 w-7 h-7 flex items-center justify-center">
-                    {isSidebarExpanded ? <ChevronDoubleLeftIcon className="w-6 h-6" /> : <ChevronDoubleRightIcon className="w-6 h-6" />}
+    <div className="flex h-screen w-full bg-[#212121] text-gray-300 font-sans">
+        <aside className={`flex flex-col bg-[#212121] text-white transition-all duration-300 border-r border-[#424243] ${isSidebarExpanded ? 'w-64' : 'w-20'}`}>
+            <div className="p-4 flex items-center justify-between border-b border-[#424243]">
+                <div className={`flex items-center ${isSidebarExpanded ? 'gap-2' : 'justify-center'}`}>
+                    <button onClick={() => window.location.hash = ''} className="flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-full">
+                        <img src="https://res.cloudinary.com/dkvkxermy/image/upload/v1762160811/20bbfb2f-a218-4a21-b75f-4b75789f05d8_ycizdr.png" alt="Suvo Logo" className="h-10 w-10" />
+                    </button>
+                    {isSidebarExpanded && <span className="font-saira text-2xl font-bold tracking-wider">Suvo</span>}
                 </div>
-            </button>
-        </div>
-      </aside>
-
-      <div className="relative isolate flex-1 flex flex-col overflow-hidden">
-        <header className="flex justify-between items-center p-4">
-            <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold text-white">{chatTitle}</h2>
-                <button onClick={handleRenameChat} className="p-2 rounded-full hover:bg-[#4a4a4b] transition-colors">
-                    <EditIcon className="w-5 h-5 text-gray-400" />
+                <button
+                    onClick={handleNewChat}
+                    className="p-2 rounded-lg hover:bg-[#4a4a4b] transition-colors duration-200 active:scale-95"
+                    aria-label="New Chat"
+                >
+                    <PencilIcon className="w-5 h-5" />
                 </button>
             </div>
-            <div className="flex items-center gap-2">
-                <div className="relative" ref={moreMenuRef}>
-                    <button onClick={() => setIsMoreMenuOpen(prev => !prev)} className="p-2 rounded-full hover:bg-[#4a4a4b] transition-colors">
-                        <MoreHorizontalIcon className="w-6 h-6 text-white" />
-                    </button>
-                    {isMoreMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-[#424243] border border-[#515152] rounded-md shadow-lg z-10">
-                            <button onClick={handleClearChat} className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#4a4a4b]">Clear Chat</button>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </header>
 
+            <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1 hide-scrollbar">
+                {isSidebarExpanded && <h3 className="px-2.5 pt-2 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Recent</h3>}
+                {recentChats.map((chat, index) => (
+                    <button 
+                        key={index} 
+                        onClick={() => setActiveChatIndex(index)}
+                        className={`flex items-center w-full p-2.5 rounded-lg text-left transition-colors duration-200 truncate ${activeChatIndex === index ? 'bg-[#424243] text-white' : 'text-gray-300 hover:bg-[#4a4a4b]'}`}
+                    >
+                        <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                            <ChatBubbleIcon className="w-full h-full" />
+                        </div>
+                        {isSidebarExpanded && <span className="ml-3 truncate">{chat}</span>}
+                    </button>
+                ))}
+            </div>
+
+            <div className="px-4 py-2 border-t border-[#424243] space-y-1">
+                <button
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="flex items-center w-full p-2.5 rounded-lg text-left text-gray-300 hover:bg-[#4a4a4b] transition-colors"
+                >
+                    <div className="flex-shrink-0 w-7 h-7 flex items-center justify-center">
+                        <UserProfileIcon className="w-full h-full" />
+                    </div>
+                    {isSidebarExpanded && <span className="ml-3 font-medium truncate">Guest User</span>}
+                </button>
+                <button
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="flex items-center w-full p-2.5 rounded-lg text-left text-gray-300 hover:bg-[#4a4a4b] transition-colors"
+                >
+                    <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                        <SettingsIcon className="w-full h-full" />
+                    </div>
+                    {isSidebarExpanded && <span className="ml-3 font-medium">Settings</span>}
+                </button>
+                <button
+                    onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
+                    className="flex items-center w-full p-2.5 rounded-lg text-left text-gray-300 hover:bg-[#4a4a4b] transition-colors"
+                    aria-label={isSidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+                >
+                    <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                        {isSidebarExpanded ? <ChevronDoubleLeftIcon className="w-full h-full" /> : <ChevronDoubleRightIcon className="w-full h-full" />}
+                    </div>
+                    {isSidebarExpanded && <span className="ml-3 font-medium">Collapse</span>}
+                </button>
+            </div>
+        </aside>
+
+      <div className="relative isolate flex-1 flex flex-col overflow-hidden bg-[#212121]">
+        <header className="flex items-center p-4 flex-shrink-0">
+            <h1 className="text-xl font-semibold text-white">{chatTitle}</h1>
+            <button className="ml-2 p-1 rounded-full text-gray-400 hover:text-white hover:bg-[#424243] transition-colors">
+                <EditIcon className="w-5 h-5" />
+            </button>
+        </header>
+        
         <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
             <div className="w-full max-w-4xl space-y-8">
                 {messages.length === 0 && !isLoading && (
                     <div className="text-center text-gray-500 mt-20">
-                        <img src="https://res.cloudinary.com/dkvkxermy/image/upload/v1762160811/20bbfb2f-a218-4a21-b75f-4b75789f05d8_ycizdr.png" alt="Suvo Logo" className={`mx-auto opacity-20 mb-4 transition-all duration-300 ${isSidebarExpanded ? 'h-52 w-52' : 'h-40 w-40'}`} />
+                        <img src="https://res.cloudinary.com/dkvkxermy/image/upload/v1762160811/20bbfb2f-a218-4a21-b75f-4b75789f05d8_ycizdr.png" alt="Suvo Logo" className={`mx-auto opacity-10 mb-4 transition-all duration-300 ${isSidebarExpanded ? 'h-52 w-52' : 'h-40 w-40'}`} />
                         <h1 className="text-2xl font-medium text-white">How can I help you today?</h1>
                     </div>
                 )}
@@ -334,7 +309,7 @@ const Dashboard: React.FC = () => {
                                     <AiMessageAction icon={<VolumeUpIcon className="w-5 h-5" />} onClick={() => handleTTS(message.content)} />
                                     <AiMessageAction icon={copiedStates[index] ? <CheckIcon className="w-5 h-5 text-green-400" /> : <ClipboardIcon className="w-5 h-5" />} onClick={() => handleCopy(message.content, index)} />
                                     <AiMessageAction icon={<ShareIcon className="w-5 h-5" />} onClick={() => alert('Share functionality coming soon!')}/>
-                                </div>
+                                 </div>
                                 <div className="flex items-center gap-3 border-l border-[#515152] pl-3">
                                     <AiMessageAction icon={<ThumbUpIcon className="w-5 h-5" isFilled={feedback[index] === 'up'} />} onClick={() => handleFeedback(index, 'up')} />
                                     <AiMessageAction icon={<ThumbDownIcon className="w-5 h-5" isFilled={feedback[index] === 'down'} />} onClick={() => handleFeedback(index, 'down')} />
@@ -356,9 +331,9 @@ const Dashboard: React.FC = () => {
             </div>
         </main>
 
-        <footer className="p-4 md:pb-8 md:px-6 flex justify-center">
+        <footer className="p-4 md:pb-4 md:px-6 flex justify-center">
             <div className="w-full max-w-4xl">
-                <form onSubmit={handleSendMessage} className="bg-[#424243] border border-[#515152] rounded-2xl overflow-hidden flex flex-col">
+                <form onSubmit={handleSendMessage} className="bg-[#212121] border border-[#424243] rounded-3xl overflow-hidden flex flex-col">
                     <textarea
                         ref={textareaRef}
                         rows={1}
@@ -367,10 +342,10 @@ const Dashboard: React.FC = () => {
                         onKeyDown={handleKeyDown}
                         placeholder="How can Suvo help?"
                         disabled={isLoading}
-                        className="w-full bg-transparent px-6 py-4 text-white placeholder-gray-500 focus:outline-none resize-none overflow-y-auto max-h-48 disabled:opacity-50 hide-scrollbar"
+                        className="w-full bg-transparent px-5 py-4 text-white placeholder-gray-500 focus:outline-none resize-none overflow-y-auto max-h-48 disabled:opacity-50 hide-scrollbar"
                         style={{ lineHeight: '1.5rem' }}
                     />
-                    <div className="flex justify-between items-center pl-4 pr-2 pb-2">
+                    <div className="flex justify-between items-center pl-3 pr-2 pb-1">
                         <div>
                            <input type="file" id="file-upload" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
                            <label htmlFor="file-upload" className="cursor-pointer text-white p-3 rounded-full hover:bg-[#4a4a4b] inline-block">
@@ -379,11 +354,11 @@ const Dashboard: React.FC = () => {
                         </div>
                         <div>
                             {isLoading ? (
-                                <button type="button" onClick={() => generationControllerRef.current?.stop()} className="w-12 h-12 flex items-center justify-center rounded-full bg-white text-black transition-all active:scale-90">
+                                <button type="button" onClick={() => generationControllerRef.current?.stop()} className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-black transition-all active:scale-90">
                                     <PauseIcon className="w-6 h-6" />
                                 </button>
                             ) : (
-                                <button type="submit" disabled={!inputValue.trim()} className="w-12 h-12 flex items-center justify-center rounded-full bg-white text-black transition-all active:scale-90 disabled:bg-[#515152] disabled:cursor-not-allowed">
+                                <button type="submit" disabled={!inputValue.trim()} className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-black transition-all active:scale-90 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed">
                                     <ArrowUpIcon className="w-6 h-6" />
                                 </button>
                             )}
