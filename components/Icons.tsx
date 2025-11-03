@@ -1,9 +1,9 @@
-
 import React from 'react';
 
 interface IconProps {
   className?: string;
   onClick?: () => void;
+  isFilled?: boolean;
 }
 
 export const SparkleIcon: React.FC<IconProps> = ({ className }) => (
@@ -78,8 +78,9 @@ export const EmailIcon: React.FC<IconProps> = ({ className }) => (
   </svg>
 );
 
-export const CloseIcon: React.FC<IconProps> = ({ className }) => (
+export const CloseIcon: React.FC<IconProps> = ({ className, onClick }) => (
   <svg 
+    onClick={onClick}
     xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 24 24" 
     fill="currentColor" 
@@ -255,17 +256,6 @@ export const BellIcon: React.FC<IconProps> = ({ className }) => (
     </svg>
 );
 
-// New Icons for the Chat UI
-
-export const GrokIcon: React.FC<IconProps> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <ellipse cx="12" cy="12" rx="10" ry="4"></ellipse>
-    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"></ellipse>
-    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"></ellipse>
-    <circle cx="12" cy="12" r="1"></circle>
-  </svg>
-);
-
 export const EditIcon: React.FC<IconProps> = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -305,7 +295,7 @@ export const HistoryIcon: React.FC<IconProps> = ({ className }) => (
 );
 
 export const UserProfileIcon: React.FC<IconProps> = ({ className }) => (
-    <div className={className}>
+    <div className={`rounded-full overflow-hidden ${className}`}>
         <svg viewBox="0 0 100 100" className="w-full h-full">
             <defs>
                 <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -324,6 +314,12 @@ export const ChevronDoubleRightIcon: React.FC<IconProps> = ({ className }) => (
     <path d="M13 17l5-5-5-5"></path><path d="M6 17l5-5-5-5"></path>
   </svg>
 );
+
+export const ChevronDoubleLeftIcon: React.FC<IconProps> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M11 17l-5-5 5-5"></path><path d="M18 17l-5-5 5-5"></path>
+    </svg>
+  );
 
 export const MoreHorizontalIcon: React.FC<IconProps> = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -365,6 +361,12 @@ export const ChatBubbleIcon: React.FC<IconProps> = ({ className }) => (
   </svg>
 );
 
+export const CheckIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+);
+
 export const ClipboardIcon: React.FC<IconProps> = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
@@ -372,14 +374,14 @@ export const ClipboardIcon: React.FC<IconProps> = ({ className }) => (
   </svg>
 );
 
-export const ThumbUpIcon: React.FC<IconProps> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+export const ThumbUpIcon: React.FC<IconProps> = ({ className, isFilled }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFilled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
   </svg>
 );
 
-export const ThumbDownIcon: React.FC<IconProps> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+export const ThumbDownIcon: React.FC<IconProps> = ({ className, isFilled }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFilled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm-3-13H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"></path>
   </svg>
 );
@@ -402,3 +404,27 @@ export const VoiceWaveIcon: React.FC<IconProps> = ({ className }) => (
       <path d="M 20 50 Q 30 25, 40 50 T 60 50 T 80 50" stroke="currentColor" strokeWidth="6" fill="none" strokeLinecap="round" />
     </svg>
 );
+
+export const PaperclipIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+  </svg>
+);
+
+export const ArrowUpIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+  </svg>
+);
+
+export const PauseIcon: React.FC<IconProps> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 00-.75.75v12a.75.75 0 001.5 0V6a.75.75 0 00-.75-.75zM17.25 5.25a.75.75 0 00-.75.75v12a.75.75 0 001.5 0V6a.75.75 0 00-.75-.75z" clipRule="evenodd" />
+    </svg>
+  );
+  
+  
+  
+  
+  
