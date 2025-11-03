@@ -1,6 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { TvIcon } from '../components/Icons';
 import LoginModal from '../components/LoginModal';
+import HeroBackground from '../components/HeroBackground';
+import NeuralBackground from '../components/NeuralBackground';
 
 declare global {
   interface Window {
@@ -55,39 +58,10 @@ const LandingPage: React.FC = () => {
   const titlePart2 = "who wait.";
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-black text-white flex flex-col items-center justify-center isolate p-4">
-      <canvas ref={canvasRef} className="absolute inset-0 z-[5] w-full h-full"></canvas>
-      {/* Background Effects */}
-      <div className="stars"></div>
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Existing Stars */}
-        <div className="twinkle-star" style={{ top: '10%', left: '10%', animationDelay: '0s', animationDuration: '2.5s' }}></div>
-        <div className="twinkle-star" style={{ top: '25%', left: '85%', animationDelay: '0.2s', animationDuration: '1.8s' }}></div>
-        <div className="twinkle-star" style={{ top: '50%', left: '50%', animationDelay: '0.4s', animationDuration: '2.2s' }}></div>
-        <div className="twinkle-star" style={{ top: '5%', left: '40%', animationDelay: '0.8s', animationDuration: '2.8s' }}></div>
-        <div className="twinkle-star" style={{ top: '60%', left: '95%', animationDelay: '1s', animationDuration: '1.9s' }}></div>
-        <div className="twinkle-star" style={{ top: '80%', left: '70%', animationDelay: '1.2s', animationDuration: '2.1s' }}></div>
-        <div className="twinkle-star" style={{ top: '35%', left: '5%', animationDelay: '1.4s', animationDuration: '1.7s' }}></div>
-        {/* Added Stars */}
-        <div className="twinkle-star" style={{ top: '15%', left: '30%', animationDelay: '0.1s', animationDuration: '2.0s' }}></div>
-        <div className="twinkle-star" style={{ top: '20%', left: '70%', animationDelay: '0.3s', animationDuration: '1.6s' }}></div>
-        <div className="twinkle-star" style={{ top: '12%', left: '90%', animationDelay: '0.5s', animationDuration: '2.4s' }}></div>
-        <div className="twinkle-star" style={{ top: '30%', left: '25%', animationDelay: '0.7s', animationDuration: '1.9s' }}></div>
-        <div className="twinkle-star" style={{ top: '8%', left: '65%', animationDelay: '0.9s', animationDuration: '2.6s' }}></div>
-        <div className="twinkle-star" style={{ top: '40%', left: '55%', animationDelay: '1.1s', animationDuration: '2.3s' }}></div>
-        {/* More stars for the top area */}
-        <div className="twinkle-star" style={{ top: '8%', left: '22%', animationDelay: '1.3s', animationDuration: '1.8s' }}></div>
-        <div className="twinkle-star" style={{ top: '18%', left: '58%', animationDelay: '1.5s', animationDuration: '2.5s' }}></div>
-        <div className="twinkle-star" style={{ top: '28%', left: '8%', animationDelay: '1.7s', animationDuration: '2.1s' }}></div>
-        <div className="twinkle-star" style={{ top: '38%', left: '78%', animationDelay: '1.9s', animationDuration: '1.6s' }}></div>
-        <div className="twinkle-star" style={{ top: '2%', left: '50%', animationDelay: '2.1s', animationDuration: '2.9s' }}></div>
-        <div className="twinkle-star" style={{ top: '22%', left: '95%', animationDelay: '2.3s', animationDuration: '1.7s' }}></div>
-        <div className="twinkle-star" style={{ top: '32%', left: '35%', animationDelay: '2.5s', animationDuration: '2.2s' }}></div>
-        <div className="twinkle-star" style={{ top: '14%', left: '45%', animationDelay: '2.7s', animationDuration: '2.0s' }}></div>
-        <div className="twinkle-star" style={{ top: '26%', left: '15%', animationDelay: '2.9s', animationDuration: '1.5s' }}></div>
-        <div className="twinkle-star" style={{ top: '36%', left: '88%', animationDelay: '3.1s', animationDuration: '2.7s' }}></div>
-      </div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_50%,rgba(56,16,124,0.3),rgba(0,0,0,0))] z-0"></div>
+    <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col items-center justify-center isolate p-4">
+      <HeroBackground />
+      <NeuralBackground />
+      <canvas ref={canvasRef} className="absolute inset-0 z-[16] w-full h-full pointer-events-none"></canvas>
 
       {/* Header */}
       <header
@@ -135,7 +109,7 @@ const LandingPage: React.FC = () => {
           >
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="rounded-full bg-gray-200 px-8 py-4 text-black font-semibold hover:bg-white transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-gray-200/40 w-full sm:w-auto text-lg"
+                className="btn-get-started relative isolate overflow-hidden rounded-full bg-gray-200 px-8 py-4 text-black font-semibold shadow-md w-full sm:w-auto text-lg"
               >
                 Get Started
               </button>

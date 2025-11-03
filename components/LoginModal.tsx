@@ -61,10 +61,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside
       >
-        <CloseIcon
-          className="absolute top-6 right-6 w-7 h-7 text-gray-400 hover:text-white cursor-pointer transition-colors"
+        <button
           onClick={onClose}
-        />
+          className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          aria-label="Close modal"
+        >
+          <CloseIcon className="w-6 h-6" />
+        </button>
         <div className="grid md:grid-cols-2">
           {/* Left Side: Image */}
           <div className="hidden md:block relative overflow-hidden">

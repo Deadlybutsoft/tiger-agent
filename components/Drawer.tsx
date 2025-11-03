@@ -1,3 +1,4 @@
+
 import React, { ReactNode } from 'react';
 import { CloseIcon } from './Icons';
 
@@ -26,7 +27,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, children, title }) => 
 
       {/* Drawer Panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-gray-900/80 backdrop-blur-xl border-l border-gray-800 shadow-2xl shadow-purple-900/20 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-[#212121]/90 backdrop-blur-xl border-l border-gray-700 shadow-2xl shadow-purple-900/20 transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -34,10 +35,13 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, children, title }) => 
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-800">
             <h2 className="text-xl font-semibold text-white">{title}</h2>
-            <CloseIcon
-              className="w-7 h-7 text-gray-400 hover:text-white cursor-pointer transition-colors"
+            <button
               onClick={onClose}
-            />
+              className="p-1 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              aria-label="Close drawer"
+            >
+              <CloseIcon className="w-6 h-6" />
+            </button>
           </div>
           {/* Content */}
           <div className="flex-grow p-6 overflow-y-auto">

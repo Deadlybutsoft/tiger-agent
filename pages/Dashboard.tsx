@@ -1,174 +1,149 @@
 
-import React, { useState } from 'react';
-import Drawer from '../components/Drawer';
-import { SettingsIcon, UserIcon, SunIcon, CreditCardIcon, LinkIcon, SearchIcon, BellIcon, ChartBarIcon } from '../components/Icons';
+import React from 'react';
+import { 
+    SearchIcon, 
+    EditIcon, 
+    AudioWaveIcon, 
+    GridIcon, 
+    FolderIcon, 
+    HistoryIcon, 
+    UserProfileIcon,
+    ChevronDoubleRightIcon,
+    MoreHorizontalIcon,
+    ShareIcon,
+    PencilIcon,
+    LightbulbIcon,
+    RefreshIcon,
+    VolumeUpIcon,
+    ChatBubbleIcon,
+    ClipboardIcon,
+    ThumbUpIcon,
+    ThumbDownIcon,
+    MicrophoneIcon,
+    MoonIcon,
+    VoiceWaveIcon,
+    GrokIcon
+} from '../components/Icons';
 
-// A reusable StatCard component for the dashboard
-const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: string; change: string; }> = ({ icon, title, value, change }) => (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 flex flex-col gap-4 transform transition-all hover:-translate-y-1 hover:border-purple-500/50">
-        <div className="flex items-center justify-between">
-            <h3 className="text-gray-400 font-medium">{title}</h3>
-            <div className="text-gray-500">{icon}</div>
-        </div>
-        <div>
-            <p className="text-4xl font-bold text-white">{value}</p>
-            <p className="text-sm text-emerald-400">{change}</p>
-        </div>
-    </div>
+const SidebarIcon: React.FC<{ icon: React.ReactNode; active?: boolean; }> = ({ icon, active }) => (
+    <button className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-200 ${active ? 'bg-white text-black' : 'hover:bg-gray-800'}`}>
+        {icon}
+    </button>
+);
+
+const AiMessageAction: React.FC<{ icon: React.ReactNode; }> = ({ icon }) => (
+    <button className="text-gray-500 hover:text-white transition-colors">
+        {icon}
+    </button>
 );
 
 const Dashboard: React.FC = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
-  const handleLogout = () => {
-    window.location.hash = '';
-  };
-
   return (
-    <div className="min-h-screen w-full bg-[#0D0D10] text-gray-100 flex flex-col">
-      
-      {/* Header */}
-      <header className="sticky top-0 z-30 bg-[#0D0D10]/80 backdrop-blur-md border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-                {/* Left side */}
-                <div className="flex items-center gap-8">
-                    <button onClick={() => window.location.hash = ''} className="text-2xl font-bold tracking-wider font-saira text-white">Suvo</button>
-                </div>
-                
-                {/* Right side */}
-                <div className="flex items-center gap-4">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            className="bg-gray-900 border border-gray-800 rounded-lg py-2 pl-10 pr-4 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all w-40 md:w-64"
-                        />
-                        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                    </div>
-                    <button className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition-colors" aria-label="Notifications">
-                        <BellIcon className="w-6 h-6" />
-                    </button>
-                    <button 
-                        onClick={() => setIsDrawerOpen(true)}
-                        className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
-                        aria-label="Open settings"
-                    >
-                        <SettingsIcon className="w-6 h-6" />
-                    </button>
-                </div>
-            </div>
+    <div className="flex h-screen w-full bg-[#131313] text-gray-300 font-sans">
+      {/* Sidebar */}
+      <aside className="w-20 bg-black flex flex-col items-center justify-between p-4">
+        <div className="flex flex-col items-center gap-4">
+            <SidebarIcon icon={<GrokIcon className="w-7 h-7" />} />
+            <div className="w-full border-b border-gray-800 my-2"></div>
+            <SidebarIcon icon={<SearchIcon className="w-6 h-6" />} active />
+            <SidebarIcon icon={<PencilIcon className="w-6 h-6" />} />
+            <SidebarIcon icon={<AudioWaveIcon className="w-6 h-6" />} />
+            <SidebarIcon icon={<GridIcon className="w-6 h-6" />} />
+            <SidebarIcon icon={<FolderIcon className="w-6 h-6" />} />
+            <SidebarIcon icon={<HistoryIcon className="w-6 h-6" />} />
         </div>
-      </header>
-      
+        <div className="flex flex-col items-center gap-4">
+            <SidebarIcon icon={<UserProfileIcon className="w-12 h-12" />} />
+            <SidebarIcon icon={<ChevronDoubleRightIcon className="w-6 h-6" />} />
+        </div>
+      </aside>
+
       {/* Main Content */}
-      <main className="flex-grow z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8 animate-fade-in-up">
-            <div>
-                <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-                <p className="text-gray-400 mt-1">Welcome back, Demo User!</p>
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="flex justify-end items-center p-4">
+            <div className="flex items-center gap-2">
+                <button className="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                    <MoreHorizontalIcon className="w-6 h-6 text-gray-400" />
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-700 hover:bg-gray-800 transition-colors">
+                    <ShareIcon className="w-5 h-5 text-gray-400" />
+                    <span className="text-white font-medium">Share</span>
+                </button>
+                <button className="p-2 rounded-full hover:bg-gray-800 transition-colors">
+                    <EditIcon className="w-6 h-6 text-gray-400" />
+                </button>
             </div>
-        </div>
+        </header>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <StatCard
-                icon={<UserIcon className="w-6 h-6" />}
-                title="Total Subscribers"
-                value="1,482"
-                change="+12% from last month"
-            />
-            <StatCard
-                icon={<ChartBarIcon className="w-6 h-6" />}
-                title="Conversion Rate"
-                value="24.5%"
-                change="+2.1% from last month"
-            />
-            <StatCard
-                icon={<LinkIcon className="w-6 h-6" />}
-                title="Total Clicks"
-                value="23,912"
-                change="+33% from last week"
-            />
-        </div>
+        {/* Chat Area */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+            <div className="w-full max-w-4xl">
+                {/* User Message */}
+                <div className="flex justify-end mb-8">
+                    <div className="bg-[#1e1e1e] rounded-xl px-5 py-3">
+                        <p className="text-white">hi bro</p>
+                    </div>
+                </div>
 
-        {/* Recent Activity Section */}
-        <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <h2 className="text-xl font-semibold text-white mb-4">Recent Activity</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="py-3 px-4 font-semibold text-sm text-gray-400">User</th>
-                  <th className="py-3 px-4 font-semibold text-sm text-gray-400">Activity</th>
-                  <th className="py-3 px-4 font-semibold text-sm text-gray-400 hidden sm:table-cell">Date</th>
-                  <th className="py-3 px-4 font-semibold text-sm text-gray-400">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-800 hover:bg-gray-800/60 transition-colors">
-                    <td className="py-4 px-4 text-sm">jane.cooper@example.com</td>
-                    <td className="py-4 px-4 text-sm">Signed up for 'Starlight' campaign</td>
-                    <td className="py-4 px-4 text-sm hidden sm:table-cell">2 min ago</td>
-                    <td className="py-4 px-4 text-sm"><span className="px-2 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400">Completed</span></td>
-                </tr>
-                <tr className="border-b border-gray-800 hover:bg-gray-800/60 transition-colors">
-                    <td className="py-4 px-4 text-sm">cody.fisher@example.com</td>
-                    <td className="py-4 px-4 text-sm">Generated new landing page</td>
-                    <td className="py-4 px-4 text-sm hidden sm:table-cell">1 hour ago</td>
-                    <td className="py-4 px-4 text-sm"><span className="px-2 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400">Completed</span></td>
-                </tr>
-                 <tr className="hover:bg-gray-800/60 transition-colors">
-                    <td className="py-4 px-4 text-sm">esther.howard@example.com</td>
-                    <td className="py-4 px-4 text-sm">Clicked on 'Nebula' waitlist link</td>
-                    <td className="py-4 px-4 text-sm hidden sm:table-cell">3 hours ago</td>
-                    <td className="py-4 px-4 text-sm"><span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-500/10 text-amber-400">Pending</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </main>
-
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Settings">
-        <div className="text-white flex flex-col h-full">
-          <div className="flex-grow">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 rounded-full border-2 border-gray-700 flex items-center justify-center bg-gray-800">
-                <UserIcon className="w-8 h-8 text-gray-400" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Demo User</h3>
-                <p className="text-sm text-gray-400">demo.user@example.com</p>
-              </div>
+                {/* AI Message */}
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-2 text-gray-400">
+                        <LightbulbIcon className="w-5 h-5"/>
+                        <span>Thought for 2s</span>
+                    </div>
+                    <div>
+                        <p className="text-white text-base leading-relaxed">
+                            Hey bro! What's cooking? Got any wild questions or just here to shoot the breeze?
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
+                            <AiMessageAction icon={<RefreshIcon className="w-5 h-5" />} />
+                            <AiMessageAction icon={<VolumeUpIcon className="w-5 h-5" />} />
+                            <AiMessageAction icon={<ChatBubbleIcon className="w-5 h-5" />} />
+                            <AiMessageAction icon={<ClipboardIcon className="w-5 h-5" />} />
+                            <AiMessageAction icon={<ShareIcon className="w-5 h-5" />} />
+                        </div>
+                        <div className="flex items-center gap-3 border-l border-gray-700 pl-3">
+                            <AiMessageAction icon={<ThumbUpIcon className="w-5 h-5" />} />
+                            <AiMessageAction icon={<ThumbDownIcon className="w-5 h-5" />} />
+                        </div>
+                        <AiMessageAction icon={<MoreHorizontalIcon className="w-5 h-5" />} />
+                        <span className="text-xs text-gray-500">843ms</span>
+                    </div>
+                </div>
             </div>
-            <nav className="flex flex-col gap-2">
-              <button onClick={() => { setIsDrawerOpen(false); }} className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left w-full">
-                <UserIcon className="w-6 h-6 text-gray-400" />
-                <span>My Profile</span>
-              </button>
-              <button className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left w-full">
-                <SunIcon className="w-6 h-6 text-gray-400" />
-                <span>Appearance</span>
-              </button>
-              <button className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left w-full">
-                <CreditCardIcon className="w-6 h-6 text-gray-400" />
-                <span>Billing</span>
-              </button>
-              <button className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-colors text-left w-full">
-                <LinkIcon className="w-6 h-6 text-gray-400" />
-                <span>Integrations</span>
-              </button>
-            </nav>
-          </div>
-          <div className="mt-8 pt-4 border-t border-gray-800">
-              <button onClick={handleLogout} className="w-full flex items-center justify-center py-2 px-4 bg-transparent border border-gray-700 rounded-lg text-gray-400 font-semibold hover:bg-gray-800 hover:text-white transition-colors">
-                Logout
-              </button>
-          </div>
-        </div>
-      </Drawer>
+        </main>
+
+        {/* Input Bar */}
+        <footer className="p-4 md:p-6 flex justify-center">
+            <div className="w-full max-w-4xl">
+                <div className="relative flex items-center">
+                    <div className="absolute left-0 flex items-center pl-4">
+                        <button className="text-gray-500 hover:text-white">
+                            <MicrophoneIcon className="w-6 h-6" />
+                        </button>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="How can Grok help?"
+                        className="w-full bg-[#1e1e1e] border border-gray-700 rounded-full py-4 pl-14 pr-48 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-600"
+                    />
+                    <div className="absolute right-0 flex items-center pr-2 gap-2">
+                         <button className="flex items-center gap-2 px-3 py-2 rounded-full bg-[#1e1e1e] border border-gray-700 hover:bg-gray-800 transition-colors">
+                            <MoonIcon className="w-5 h-5 text-gray-400" />
+                            <span className="text-white font-medium text-sm">Grok 4 Fast</span>
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <button className="w-12 h-12 flex items-center justify-center rounded-full bg-white text-black hover:bg-gray-200 transition-colors">
+                            <VoiceWaveIcon className="w-7 h-7" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+      </div>
     </div>
   );
 };

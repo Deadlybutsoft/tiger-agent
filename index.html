@@ -21,55 +21,6 @@
       .font-saira {
         font-family: 'Saira', sans-serif;
       }
-      .stars {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-        background: url('https://res.cloudinary.com/dkvkxermy/image/upload/v1762008985/enhance_the_image_quality_colo_kpgumd.png') no-repeat center center;
-        background-size: cover;
-        z-index: 0;
-      }
-      .twinkle-star {
-        position: absolute;
-        width: 2px;
-        height: 2px;
-        background-color: white;
-        border-radius: 50%;
-        animation: twinkle 3s infinite ease-in-out;
-        opacity: 0;
-      }
-      @keyframes twinkle {
-        0%, 100% {
-          opacity: 0.3;
-          transform: scale(0.8);
-          background-color: #dbeafe;
-        }
-        20% {
-          opacity: 1;
-          transform: scale(1.1);
-          background-color: #fefce8;
-        }
-        40% {
-          opacity: 0.4;
-          transform: scale(0.9);
-          background-color: white;
-        }
-        60% {
-          opacity: 0.8;
-          transform: scale(1);
-          background-color: #e0e7ff;
-        }
-        80% {
-            opacity: 0.5;
-            transform: scale(0.85);
-            background-color: white;
-        }
-      }
       @keyframes fadeInUp {
         from {
           opacity: 0;
@@ -114,6 +65,64 @@
           transform: translate(0, 0) rotate(var(--rot)) scale(0);
           opacity: 0;
         }
+      }
+      .encrypted-neon-pattern {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0d0d1a, #1a1a2f 50%, #2a1a4f);
+        filter: url(#neon-texture);
+        position: relative;
+      }
+      .data-stream-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 30% 40%,
+            rgba(0, 240, 255, 0.2) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 70% 60%,
+            rgba(100, 50, 255, 0.15) 0%,
+            transparent 15%
+          );
+        animation: pulse-stream 3s ease-in-out infinite;
+      }
+      @keyframes pulse-stream {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.9;
+        }
+      }
+      .btn-get-started {
+        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .btn-get-started::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 50px;
+        height: 50px;
+        border-radius: inherit;
+        scale: 0;
+        z-index: -1;
+        background-color: white;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .btn-get-started:hover::before {
+        scale: 4;
+      }
+      .btn-get-started:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      }
+      .btn-get-started:active {
+        transform: scale(1);
       }
     </style>
   <script type="importmap">
